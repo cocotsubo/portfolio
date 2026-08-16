@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useRef, useState } from 'react'
-import { ArrowUpRight, BookOpen, Mail, MapPin, Menu, Phone, X } from 'lucide-react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { ArrowUpRight, BookOpen, Download, FolderKanban, Linkedin, Mail, MapPin, Menu, Phone, Send, X } from 'lucide-react'
 import { Reveal } from '@/components/Reveal'
 import { ThemeToggle, useTheme } from '@/components/ThemeToggle'
 
@@ -142,8 +142,60 @@ const NAV_LINKS = [
   { href: '#a-propos', label: 'À propos' },
   { href: '#parcours', label: 'Parcours' },
   { href: '#competences', label: 'Compétences' },
+  { href: '#projets', label: 'Projets' },
   { href: '#livre', label: 'Le livre' },
   { href: '#contact', label: 'Contact' },
+]
+
+const CV_PATH = '/documents/cv-corentin-de-saint-riquier.pdf'
+const LINKEDIN_URL = 'https://www.linkedin.com/in/codsr/'
+
+type PortfolioProject = {
+  name: string
+  category: string
+  duration: string
+  description: string
+  url?: string
+  urlLabel?: string
+}
+
+const PROJECTS: PortfolioProject[] = [
+  {
+    name: 'techCMD',
+    category: 'Site web',
+    duration: '3 ans',
+    description:
+      'Site d\'actualités technologiques au design moderne et épuré, pensé pour accompagner les lecteurs dans leur reprise de contrôle sur le monde numérique : articles, tutoriels pratiques, chroniques et newsletter.',
+    url: 'https://techcmd.com',
+    urlLabel: 'techcmd.com',
+  },
+  {
+    name: 'banqShift',
+    category: 'Blog',
+    duration: '2 ans',
+    description:
+      'Blog comparant banques traditionnelles et banques en ligne, réalisé sous WordPress avec un thème sur-mesure. Comparateur intelligent d\'offres et newsletter, en toute indépendance et sans rémunération.',
+    url: 'https://instagram.com/banqshift',
+    urlLabel: 'instagram.com/banqshift',
+  },
+  {
+    name: 'GalaxyExperience',
+    category: 'Site web',
+    duration: 'Client : Alexandre Pierrat',
+    description:
+      'Site vitrine immersif pour une entreprise d\'événements innovants et d\'expériences personnalisées : galerie dynamique, formulaire de contact, SEO et interface d\'administration du contenu.',
+    url: 'https://www.galaxyexperience.fr/',
+    urlLabel: 'galaxyexperience.fr',
+  },
+  {
+    name: 'La Course d\'Orientation',
+    category: 'Livre',
+    duration: '1 an et 8 mois',
+    description:
+      'Roman autobiographique traitant du harcèlement scolaire, écrit et auto-édité de bout en bout — voir la section dédiée ci-dessous.',
+    url: '#livre',
+    urlLabel: 'Découvrir le livre',
+  },
 ]
 
 function useScrollProgress() {
@@ -233,6 +285,7 @@ function HomePage() {
         <Experiences />
         <Education />
         <Skills />
+        <Projects />
         <Book />
         <Contact />
       </main>
@@ -296,6 +349,23 @@ function Hero() {
               className="rounded-full border border-white/30 px-7 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10"
             >
               Me contacter
+            </a>
+          </div>
+          <div className="mt-4 flex flex-wrap gap-4">
+            <a
+              href={CV_PATH}
+              download
+              className="inline-flex items-center gap-2 text-sm font-medium text-white/80 underline-swipe hover:text-white"
+            >
+              <Download size={16} /> Télécharger mon CV
+            </a>
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-medium text-white/80 underline-swipe hover:text-white"
+            >
+              <Linkedin size={16} /> Mon profil LinkedIn
             </a>
           </div>
         </Reveal>
@@ -373,7 +443,7 @@ function About() {
             </div>
             <div className="flex items-center gap-2 opacity-80">
               <Mail size={16} style={{ color: 'var(--accent)' }} />
-              c.dsr@outlook.fr
+              c.dsr@icloud.com
             </div>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -549,6 +619,66 @@ function Skills() {
   )
 }
 
+function Projects() {
+  return (
+    <section id="projets" className="mx-auto max-w-6xl px-6 py-28">
+      <Reveal>
+        <p className="text-center text-sm uppercase tracking-[0.3em]" style={{ color: 'var(--accent)' }}>
+          Projets personnels
+        </p>
+        <h2 className="mt-3 text-center font-display text-4xl" style={{ fontFamily: 'var(--font-display)' }}>
+          En dehors de l’agence, <span className="text-gold">je construis aussi</span>
+        </h2>
+        <p className="mx-auto mt-5 max-w-2xl text-center text-lg opacity-80">
+          Quelques projets web et éditoriaux menés en parallèle de mon parcours bancaire.
+        </p>
+      </Reveal>
+
+      <div className="mt-14 grid gap-6 sm:grid-cols-2">
+        {PROJECTS.map((project, i) => (
+          <Reveal key={project.name} variant="up" delay={i * 100}>
+            <div
+              className="flex h-full flex-col rounded-2xl border p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1"
+              style={{ borderColor: 'var(--line)', backgroundColor: 'var(--surface)' }}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+                  style={{ backgroundColor: 'var(--surface-muted)', color: 'var(--accent)' }}
+                >
+                  <FolderKanban size={20} />
+                </div>
+                <span
+                  className="rounded-full border px-3 py-1 text-xs uppercase tracking-wide opacity-70"
+                  style={{ borderColor: 'var(--line)' }}
+                >
+                  {project.category}
+                </span>
+              </div>
+              <h3 className="mt-4 font-display text-xl" style={{ fontFamily: 'var(--font-display)' }}>
+                {project.name}
+              </h3>
+              <p className="mt-1 text-xs uppercase tracking-wide opacity-60">{project.duration}</p>
+              <p className="mt-4 flex-1 text-sm leading-relaxed opacity-85">{project.description}</p>
+              {project.url && (
+                <a
+                  href={project.url}
+                  target={project.url.startsWith('#') ? undefined : '_blank'}
+                  rel={project.url.startsWith('#') ? undefined : 'noopener noreferrer'}
+                  className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium underline-swipe"
+                  style={{ color: 'var(--accent)' }}
+                >
+                  {project.urlLabel} <ArrowUpRight size={14} />
+                </a>
+              )}
+            </div>
+          </Reveal>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function Book() {
   return (
     <section id="livre" className="relative overflow-hidden px-6 py-28" style={{ backgroundColor: 'var(--background)' }}>
@@ -617,11 +747,11 @@ function Contact() {
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <a
-              href="mailto:c.dsr@outlook.fr"
+              href="mailto:c.dsr@icloud.com"
               className="inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-medium text-[var(--brand-blue-950)]"
               style={{ backgroundColor: 'var(--brand-gold)' }}
             >
-              <Mail size={16} /> c.dsr@outlook.fr
+              <Mail size={16} /> c.dsr@icloud.com
             </a>
             <a
               href="tel:+33666336668"
@@ -629,12 +759,142 @@ function Contact() {
             >
               <Phone size={16} /> 06 66 33 66 68
             </a>
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 px-7 py-3 text-sm font-medium text-white hover:bg-white/10"
+            >
+              <Linkedin size={16} /> LinkedIn
+            </a>
+            <a
+              href={CV_PATH}
+              download
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 px-7 py-3 text-sm font-medium text-white hover:bg-white/10"
+            >
+              <Download size={16} /> Mon CV
+            </a>
           </div>
+        </Reveal>
+
+        <Reveal variant="up" delay={120}>
+          <ContactForm />
         </Reveal>
       </div>
     </section>
   )
 }
+
+type FormStatus = 'idle' | 'sending' | 'success' | 'error'
+
+function ContactForm() {
+  const [status, setStatus] = useState<FormStatus>('idle')
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setStatus('sending')
+    const form = e.currentTarget
+    const formData = new FormData(form)
+
+    try {
+      const response = await fetch('/__forms.html', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(Array.from(formData.entries()) as string[][]).toString(),
+      })
+      if (response.ok) {
+        setStatus('success')
+        form.reset()
+      } else {
+        setStatus('error')
+      }
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  return (
+    <div
+      className="mt-14 rounded-3xl border border-white/15 p-8 text-left backdrop-blur"
+      style={{ backgroundColor: 'color-mix(in srgb, var(--brand-blue-900) 55%, transparent)' }}
+    >
+      {status === 'success' ? (
+        <p className="text-center text-lg text-white">
+          Merci pour votre message, je reviens vers vous rapidement.
+        </p>
+      ) : (
+        <form
+          name="contact"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          onSubmit={handleSubmit}
+          className="grid gap-5"
+        >
+          <input type="hidden" name="form-name" value="contact" />
+          <p className="hidden">
+            <label>
+              Ne pas remplir : <input name="bot-field" />
+            </label>
+          </p>
+
+          <div className="grid gap-5 sm:grid-cols-2">
+            <label className="grid gap-2 text-sm text-white/80">
+              Nom
+              <input
+                type="text"
+                name="name"
+                required
+                className="rounded-xl border border-white/25 bg-white/10 px-4 py-3 text-white placeholder-white/50 outline-none focus:border-white/60"
+                placeholder="Votre nom"
+              />
+            </label>
+            <label className="grid gap-2 text-sm text-white/80">
+              Email
+              <input
+                type="email"
+                name="email"
+                required
+                className="rounded-xl border border-white/25 bg-white/10 px-4 py-3 text-white placeholder-white/50 outline-none focus:border-white/60"
+                placeholder="vous@exemple.com"
+              />
+            </label>
+          </div>
+          <label className="grid gap-2 text-sm text-white/80">
+            Message
+            <textarea
+              name="message"
+              required
+              rows={5}
+              className="rounded-xl border border-white/25 bg-white/10 px-4 py-3 text-white placeholder-white/50 outline-none focus:border-white/60"
+              placeholder="Votre message"
+            />
+          </label>
+
+          {status === 'error' && (
+            <p className="text-sm text-white/90">
+              Une erreur est survenue, merci de réessayer ou d’écrire directement à{' '}
+              <a href="mailto:c.dsr@icloud.com" className="underline">
+                c.dsr@icloud.com
+              </a>
+              .
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={status === 'sending'}
+            className="mt-2 inline-flex w-fit items-center gap-2 rounded-full px-7 py-3 text-sm font-medium text-[var(--brand-blue-950)] transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+            style={{ backgroundColor: 'var(--brand-gold)' }}
+          >
+            <Send size={16} /> {status === 'sending' ? 'Envoi…' : 'Envoyer le message'}
+          </button>
+        </form>
+      )}
+    </div>
+  )
+}
+
 
 function Footer() {
   return (
